@@ -23,28 +23,64 @@
     $("#add-train").on("click", function() {
 
 
-    });
+   
       
-      // event.preventDefault();
+      event.preventDefault();
 
   
-      trainName = $("#train-name-input").val();
-      console.log(trainName);
+      trainName = $("#name-input").val();
+        console.log(trainName);
       destinationInput = $("#destination-input").val();
-      console.log(destinationInput);
-      timeInput = $("#time-input");
-      console.log(timeInput);
-      frequencyInput = $("frequency-input");
-      console.log(frequencyInput);
+        console.log(destinationInput);
+      timeInput = $("#time-input").val();
+      
+        var timeSplit = timeInput.split(":");
+        var timeConvert = moment().hours(timeSplit[0]).minutes(timeSplit[1]);
+        var timeFormat = timeConvert.format("hh:mm a");
+          console.log("First train at " + timeFormat);
 
+      frequencyInput = $("#frequency-input").val();
+          console.log("Every " + frequencyInput + " minutes");
 
       database.ref().set({
-        trainName: name,
-        destinationInput: destination,
-        timeInput: time,
-        frequencyInput: frequency
+        trainName: trainName,
+        destinationInput: destinationInput,
+        timeInput: timeInput,
+        frequencyInput: frequencyInput
+
+        
 
       });
+
+      $("#name-input").val("");       
+        $("#destination-input").val("");
+        $("#time-input").val("");
+        $("#frequency-input").val("");
+
+      var timeDiff = moment().diff(moment(timeConvert), "minutes");
+        console.log(timeDiff + " since first train");
+
+      var timeRemain = timeDiff % frequencyInput;
+        console.log(timeRemain + " remainder");
+
+      var tilTrain = frequencyInput - timeRemain;
+        console.log(tilTrain + " Until next train");
+
+      var nextTrain = moment().add(tilTrain, "minutes");
+
+      var nextTrainArrive = moment(nextTrain).format("hh:mm a");
+        console.log("Next train arrives at " + nextTrainArrive);
+
+      var tabs = "<tr><td>" + trainName + "</td><td>" + destinationInput + "</td><td>" + frequencyInput + "</td><td>" + nextTrainArrive + "</td><td>" + tilTrain + "</td></tr>";
+
+      $("#my-table").append(tabs); 
+
+    });
+
+
+
+
+      
 
 
     
